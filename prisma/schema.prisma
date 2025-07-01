@@ -68,9 +68,11 @@ model Skill {
 model WeatherCache {
   id          String   @id @default(cuid())
   location    String   @unique
-  temperature Float
+  temp_c      Float
+  temp_f      Float
   description String
   icon        String
+  conditionCode Int
   humidity    Int?
   windSpeed   Float?
   
