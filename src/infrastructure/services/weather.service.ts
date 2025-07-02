@@ -23,7 +23,7 @@ export class WeatherService {
       id: uuidv4(),
       location,
       temp_c: current.temp_c,
-      temp_f: current.temo_f,
+      temp_f: current.temp_f,
       condition: {
         text: current.condition.text,
         icon: current.condition.icon,
