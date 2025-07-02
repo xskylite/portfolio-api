@@ -12,7 +12,7 @@ export class getWeatherUseCase {
   }
 
   async execute(location: string, lang: string): Promise<WeatherEntity> {
-    const cached = await this.repository.getWeatherByLocation(location)
+    const cached = await this.repository.getWeatherByLocation(location, lang)
 
     if (cached && cached.expiresAt > new Date()) {
       return cached;

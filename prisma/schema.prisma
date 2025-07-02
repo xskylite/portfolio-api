@@ -67,7 +67,8 @@ model Skill {
 
 model WeatherCache {
   id          String   @id @default(cuid())
-  location    String   @unique
+  location    String
+  lang        String   @default("en")
   temp_c      Float
   temp_f      Float
   description String
@@ -78,7 +79,8 @@ model WeatherCache {
   
   cachedAt  DateTime @default(now())
   expiresAt DateTime
-  
+
+  @@unique([location, lang])
   @@map("weather_cache")
 }
 

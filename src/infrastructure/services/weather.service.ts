@@ -22,6 +22,7 @@ export class WeatherService {
     return {
       id: uuidv4(),
       location,
+      lang,
       temp_c: current.temp_c,
       temp_f: current.temp_f,
       condition: {

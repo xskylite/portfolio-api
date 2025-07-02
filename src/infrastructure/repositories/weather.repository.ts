@@ -4,9 +4,11 @@ import { WeatherEntity } from '../../core/entities/weather.entity';
 const prisma = new PrismaClient();
 
 export class WeatherRepository {
-  async getWeatherByLocation(location: string): Promise<WeatherEntity | null> {
+  async getWeatherByLocation(location: string, lang: string): Promise<WeatherEntity | null> {
     const weather = await prisma.weatherCache.findUnique({
-      where: { location },
+      where: { location_lang: {
+        location: location, lang: lang
+      }},
     });
 
     if (!weather) return null;
@@ -14,6 +16,7 @@ export class WeatherRepository {
     return {
       id: weather.id,
       location: weather.location,
+      lang: weather.lang,
       temp_c: weather.temp_c,
       temp_f: weather.temp_f,
       condition: {
@@ -30,7 +33,9 @@ export class WeatherRepository {
 
   async upsertWeather(weather: WeatherEntity): Promise<void> {
     const upsertWeather = await prisma.weatherCache.upsert({
-      where: { location: weather.location },
+      where: { location_lang: {
+        location: weather.location!, lang: weather.lang!
+      }},
       update: {
         temp_c: weather.temp_c,
         temp_f: weather.temp_f,
@@ -45,6 +50,7 @@ export class WeatherRepository {
       create: {
         id: weather.id,
         location: weather.location,
+        lang: weather.lang,
         temp_c: weather.temp_c,
         temp_f: weather.temp_f,
         description: weather.condition.text,
