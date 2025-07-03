@@ -44,5 +44,5 @@ package-lock.json
 
 # prisma
 /src/generated
-
+/prisma/migrations
 /storage

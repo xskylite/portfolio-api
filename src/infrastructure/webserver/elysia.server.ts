@@ -4,8 +4,11 @@ import { pluginSwagger } from '../../plugins/swagger';
 import { handleError } from '../../shared/utils/error-handler';
 import { rateLimit } from 'elysia-rate-limit';
 import { WeatherRoutes } from './routes/weather.routes';
+import { SpotifyRealtimeService } from '../services/spotify-realtime.service';
 
 export const buildServer = () => {
+  const spotifyRealtimeService = new SpotifyRealtimeService();
+
   return new Elysia()
       .use(
       rateLimit({
