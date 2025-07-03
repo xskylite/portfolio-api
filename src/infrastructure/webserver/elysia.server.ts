@@ -15,5 +15,5 @@ export const buildServer = () => {
       version: '1.0.0',
     }))
     .use(WeatherRoutes)
-    .onError(handleError);
+    .use(handleError)
 };
