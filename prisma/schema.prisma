@@ -84,23 +84,6 @@ model WeatherCache {
   @@map("weather_cache")
 }
 
-model SpotifyCache {
-  id       String  @id @default(cuid())
-  userId   String  @unique @default("user")
-  
-  trackName   String?
-  artistName  String?
-  albumName   String?
-  albumImage  String?
-  isPlaying   Boolean @default(false)
-  trackId     String?
-  
-  cachedAt  DateTime @default(now())
-  expiresAt DateTime
-  
-  @@map("spotify_cache")
-}
-
 enum ProjectCategory {
   PERSONAL
   ORDER
