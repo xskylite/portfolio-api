@@ -28,17 +28,7 @@ export class SpotifyService {
       });
 
       if (response.status === 204) {
-        return {
-          isPlaying: false,
-          trackName: null,
-          artistName: null,
-          albumName: null,
-          albumImage: null,
-          trackId: null,
-          currentPositionMs: 0,
-          durationMs: 0,
-          timestamp: Date.now()
-        };
+        return null;
       }
 
       if (!response.ok) {

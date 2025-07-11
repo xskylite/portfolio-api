@@ -1,4 +1,3 @@
-import { WebSocketServer } from 'ws';
 import { SpotifyService } from './spotify.service';
 import { SpotifyEntity } from '../../core/entities/spotify.entity';
 import { logger } from '../../shared/utils/logger';
@@ -19,35 +18,45 @@ interface SpotifyState {
 }
 
 export class SpotifyRealtimeService {
-  private wss: WebSocketServer;
   private spotifyService: SpotifyService;
   private pollInterval: NodeJS.Timeout | null = null;
   private broadcastInterval: NodeJS.Timeout | null = null;
   private lastKnownState: SpotifyState | null = null;
   private lastApiCall: number = 0;
+  private clients: Set<any> = new Set();
+  private isInitialized: boolean = false;
 
   constructor() {
-    this.wss = new WebSocketServer({ port: config.websocketPort });
     this.spotifyService = new SpotifyService();
-    this.setupWebSocket();
-    this.startPolling();
-    this.startBroadcasting();
   }
 
-  private setupWebSocket() {
-    this.wss.on('connection', (ws) => {
-      logger.log('Client connected to Spotify WebSocket');
-      
-      this.sendCurrentState(ws);
-      
-      ws.on('close', () => {
-        logger.log('Client disconnected from Spotify WebSocket');
-      });
+  async initialize(): Promise<void> {
+    if (this.isInitialized) {
+      logger.warn('SpotifyRealtimeService is already initialized');
+      return;
+    }
+    
+    try {
+      await this.spotifyService.getCurrentlyPlaying();
+    } catch (error) {
+      logger.warn('Spotify API connection failed, will retry periodically');
+    }
 
-      ws.on('error', (error) => {
-        logger.error('WebSocket error:', error);
-      });
-    });
+    this.startPolling();
+    this.startBroadcasting();
+    this.isInitialized = true;
+  }
+
+  addClient(ws: any) {
+    this.clients.add(ws);
+    logger.log('Client connected to Spotify WebSocket');
+    
+    this.sendCurrentState(ws);
+  }
+
+  removeClient(ws: any) {
+    this.clients.delete(ws);
+    logger.log('Client disconnected from Spotify WebSocket');
   }
 
   private async fetchSpotifyState() {
@@ -110,21 +119,26 @@ export class SpotifyRealtimeService {
     
     if (!interpolatedState) return;
 
-    const clients = targetWs ? [targetWs] : Array.from(this.wss.clients);
+    const clients = targetWs ? [targetWs] : Array.from(this.clients);
     
     clients.forEach(client => {
-      if (client.readyState === 1) {
-        client.send(JSON.stringify({
-          type: 'spotify_update',
-          data: interpolatedState
-        }));
+      try {
+        if (client.readyState === 1) {
+          client.send(JSON.stringify({
+            type: 'spotify_update',
+            data: interpolatedState
+          }));
+        } else {
+          this.clients.delete(client);
+        }
+      } catch (error) {
+        logger.error('Error sending WebSocket message:', error);
+        this.clients.delete(client);
       }
     });
   }
 
   private startPolling() {
-    logger.log('Starting Spotify API polling every 5 seconds');
-    
     this.fetchSpotifyState();
     
     this.pollInterval = setInterval(() => {
@@ -142,8 +156,6 @@ export class SpotifyRealtimeService {
   }
 
   private startBroadcasting() {
-    logger.log('Starting real-time broadcasting every 500ms');
-    
     this.broadcastInterval = setInterval(() => {
       const interval = this.shouldUpdateMoreFrequently() ? 250 : 500;
       
@@ -169,7 +181,15 @@ export class SpotifyRealtimeService {
       logger.log('Stopped real-time broadcasting');
     }
     
-    this.wss.close();
-    logger.log('WebSocket server closed');
+    this.clients.clear();
+    logger.log('All WebSocket connections closed');
+  }
+
+  public getConnectedClientsCount(): number {
+    return this.clients.size;
+  }
+
+  public getCurrentTrack() {
+    return this.lastKnownState;
   }
 }
