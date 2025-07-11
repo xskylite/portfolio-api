@@ -9,29 +9,29 @@ datasource db {
 }
 
 model Project {
-  id          String            @id @default(cuid())
-  name        String
-  logo        String?
-  version     String?
-  website     String?
+  id      String  @id @default(cuid())
+  name    String
+  logo    String?
+  version String?
+  website String?
 
   technologies ProjectTechnology[]
 
-  isDone              Boolean @default(false)
-  isReceivingUpdates  Boolean @default(false)
-  isInProduction      Boolean @default(false)
-  
-  description String
+  isDone             Boolean @default(false)
+  isReceivingUpdates Boolean @default(false)
+  isInProduction     Boolean @default(false)
+
+  description  String
   previewImage String?
-  
-  category    ProjectCategory // PERSONAL, ORDER, OPENSOURCE
-  type        ProjectType     // FRONTEND, BACKEND, BOTS
-  
+
+  category ProjectCategory // PERSONAL, ORDER, OPENSOURCE
+  type     ProjectType // FRONTEND, BACKEND, BOTS
+
   displayOrder Int @default(0)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("projects")
 }
 
@@ -40,43 +40,44 @@ model ProjectTechnology {
   projectId String
   skillId   String
   version   String?
-  
+
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
-  
+
   @@map("project_technologies")
 }
 
 model Skill {
   id          String        @id @default(cuid())
   name        String        @unique
+  slugs       String[]      @unique
   icon        String?
   category    SkillCategory // ALL, FRONTEND, BACKEND, DEVOPS
   isActiveUse Boolean       @default(true)
   description String?
-  
+
   projectTechnologies ProjectTechnology[]
 
   displayOrder Int @default(0)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("skills")
 }
 
 model WeatherCache {
-  id          String   @id @default(cuid())
-  location    String
-  lang        String   @default("en")
-  temp_c      Float
-  temp_f      Float
-  description String
-  icon        String
+  id            String @id @default(cuid())
+  location      String
+  lang          String @default("en")
+  temp_c        Float
+  temp_f        Float
+  description   String
+  icon          String
   conditionCode Int
-  humidity    Int?
-  windSpeed   Float?
-  
+  humidity      Int?
+  windSpeed     Float?
+
   cachedAt  DateTime @default(now())
   expiresAt DateTime
 
@@ -97,7 +98,6 @@ enum ProjectType {
 }
 
 enum SkillCategory {
-  ALL
   FRONTEND
   BACKEND
   DEVOPS
