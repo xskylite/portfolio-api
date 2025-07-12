@@ -4,21 +4,21 @@ import { pluginSwagger } from '../../plugins/swagger';
 import { handleError } from '../../shared/utils/error-handler';
 import { rateLimit } from 'elysia-rate-limit';
 import { WeatherRoutes } from './routes/weather.routes';
-import { SpotifyRealtimeService } from '../services/spotify-realtime.service';
+import { SkillRoutes } from './routes/skills.routes';
+import { ProjectRoutes } from './routes/projects.routes';
+import { SpotifyRoutes } from './routes/spotify.routes';
 
 export const buildServer = () => {
-  const spotifyRealtimeService = new SpotifyRealtimeService();
-
-  return new Elysia()
-      .use(
+  const app = new Elysia()
+    .use(
       rateLimit({
         duration: 60_000,
-        max: 20,
+        max: 2000,
         errorResponse: new Response(
           JSON.stringify({
-          success: false,
-          error: 'Rate limit exceeded. Please try again later.',
-        }), {
+            success: false,
+            error: 'Rate limit exceeded. Please try again later.',
+          }), {
           status: 429,
           headers: {
             'Content-Type': 'application/json',
@@ -27,6 +27,7 @@ export const buildServer = () => {
       })
     )
     .use(cookie())
+    .use(handleError)
     .use(pluginSwagger)
     .get('/api/health', () => ({
       status: 'ok',
@@ -35,5 +36,9 @@ export const buildServer = () => {
       version: '1.0.0',
     }))
     .use(WeatherRoutes)
-    .use(handleError)
+    .use(SkillRoutes)
+    .use(ProjectRoutes)
+    .use(SpotifyRoutes);
+
+  return app;
 };
