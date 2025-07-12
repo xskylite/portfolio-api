@@ -1,9 +1,11 @@
+import { SkillCategory } from "../../shared/enums/skill-category.enum";
+
 export interface SkillEntity {
   id: string;
   name: string;
-  slugs: String[];
+  slugs: string[];
   icon?: string;
-  category: 'FRONTEND' | 'BACKEND' | 'DEVOPS';
+  category: SkillCategory;
   isActiveUse: boolean;
   description?: string;
   displayOrder: number;
