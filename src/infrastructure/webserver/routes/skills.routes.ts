@@ -2,6 +2,7 @@ import { Elysia } from 'elysia';
 import { SkillController } from '../../../interfaces/controllers/skill.controller';
 import { SkillEntity } from '../../../core/entities/skill.entity';
 import { SkillCategory } from '../../../shared/enums/skill-category.enum';
+import { NotFound } from '../../../shared/utils/error';
 
 export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
   .get('/', async (ctx) => {
@@ -11,7 +12,7 @@ export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
   .get('/:id', async (ctx) => {
     const skill = await SkillController.getSkillById(ctx.params.id);
     if (!skill) {
-      return { error: 'Skill not found' };
+      throw NotFound('Skill not found')
     }
     return skill;
   })
@@ -19,7 +20,7 @@ export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
   .get('/slug/:slug', async (ctx) => {
     const skill = await SkillController.getSkillBySlug(ctx.params.slug);
     if (!skill) {
-      return { error: 'Skill not found' };
+      throw NotFound('Skill not found')
     }
     return skill;
   })
@@ -36,11 +37,11 @@ export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
   })
   .delete('/:id', async (ctx) => {
     await SkillController.deleteSkillById(ctx.params.id);
-    return { success: true };
+    return;
   })
   .delete('/slug/:slug', async (ctx) => {
     await SkillController.deleteSkillBySlug(ctx.params.slug);
-    return { success: true };
+    return;
   })
   .get('/category/:category', async (ctx) => {
     const rawCategory = ctx.params.category.toUpperCase();

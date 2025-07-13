@@ -18,4 +18,4 @@ export const WeatherResponseSchema = t.Object({
   windSpeed: t.Optional(t.Number()),
   cachedAt: t.String({ format: 'date-time' }),
   expiresAt: t.String({ format: 'date-time' })
-});
+})

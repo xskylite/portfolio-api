@@ -1,40 +1,23 @@
 import { Elysia } from 'elysia';
 import cookie from '@elysiajs/cookie';
 import { pluginSwagger } from '../../plugins/swagger';
-import { handleError } from '../../shared/utils/error-handler';
-import { rateLimit } from 'elysia-rate-limit';
+import { pluginRateLimit } from '../../plugins/rate-limit';
 import { WeatherRoutes } from './routes/weather.routes';
 import { SkillRoutes } from './routes/skills.routes';
 import { ProjectRoutes } from './routes/projects.routes';
 import { SpotifyRoutes } from './routes/spotify.routes';
+import { HealthRoutes } from './routes/health.routes';
+import { handleError } from '../../shared/utils/handle-error';
+import { handleResponse } from '../../shared/utils/handle-response';
 
 export const buildServer = () => {
   const app = new Elysia()
-    .use(
-      rateLimit({
-        duration: 60_000,
-        max: 2000,
-        errorResponse: new Response(
-          JSON.stringify({
-            success: false,
-            error: 'Rate limit exceeded. Please try again later.',
-          }), {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }),
-      })
-    )
+    .onError(handleError)
+    .mapResponse(handleResponse)
+    .use(pluginRateLimit)
     .use(cookie())
-    .use(handleError)
     .use(pluginSwagger)
-    .get('/api/health', () => ({
-      status: 'ok',
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-      version: '1.0.0',
-    }))
+    .use(HealthRoutes)
     .use(WeatherRoutes)
     .use(SkillRoutes)
     .use(ProjectRoutes)
