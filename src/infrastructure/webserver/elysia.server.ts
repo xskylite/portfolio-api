@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia';
 import cookie from '@elysiajs/cookie';
+import { cors } from '@elysiajs/cors';
 import { pluginSwagger } from '../../plugins/swagger';
 import { pluginRateLimit } from '../../plugins/rate-limit';
 import { WeatherRoutes } from './routes/weather.routes';
@@ -12,16 +13,20 @@ import { handleResponse } from '../../shared/utils/handle-response';
 
 export const buildServer = () => {
   const app = new Elysia()
+  .use(pluginSwagger)
+    .use(cors({
+      origin: ['http://localhost:3000'],
+      credentials: true
+    }))
     .onError(handleError)
     .mapResponse(handleResponse)
     .use(pluginRateLimit)
     .use(cookie())
-    .use(pluginSwagger)
     .use(HealthRoutes)
     .use(WeatherRoutes)
     .use(SkillRoutes)
     .use(ProjectRoutes)
-    .use(SpotifyRoutes);
+    .use(SpotifyRoutes)
 
   return app;
 };
