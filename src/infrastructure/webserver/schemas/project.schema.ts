@@ -140,8 +140,3 @@ export const ProjectSummaryResponseSchema = t.Object({
 });
 
 export const ProjectsResponseSchema = t.Array(ProjectResponseSchema);
-export const ProjectsSummaryResponseSchema = t.Array(ProjectSummaryResponseSchema);
-
-
-export const PublicProjectResponseSchema = t.Omit(ProjectResponseSchema, ['isReceivingUpdates', 'displayOrder']);
-export const PublicProjectsResponseSchema = t.Array(PublicProjectResponseSchema);
