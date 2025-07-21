@@ -45,15 +45,6 @@ export class SkillRepository {
     return skill ? this.mapSkill(skill) : null;
   }
 
-  async getSkillsByCategory(category: SkillCategory): Promise<SkillEntity[]> {
-    const skills = await prisma.skill.findMany({
-      where: { category: category.toUpperCase() as SkillCategory, },
-      orderBy: { displayOrder: 'asc' },
-    });
-
-    return skills.map(this.mapSkill);
-  }
-
   async upsertSkill(skill: SkillEntity): Promise<SkillEntity> {
     const upserted = await prisma.skill.upsert({
       where: { id: skill.id },

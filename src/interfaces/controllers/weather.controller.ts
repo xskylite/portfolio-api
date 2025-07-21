@@ -24,13 +24,11 @@ export const WeatherController = {
       const location = query.location
       const lang = query.lang || "en"
 
-      if (!location) return { error: "Missing location" }
 
       const weather = await weatherUseCase.execute(location, lang)
       return weather;
     } catch (error) {
-      console.log("WeatherController || Error:" + error);
-      return { error: "Something went wrong" }
+      throw error;
     }
   }
 }

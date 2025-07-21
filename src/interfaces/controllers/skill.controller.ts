@@ -12,8 +12,7 @@ export const SkillController = {
       const skills = await useCase.getAllSkills();
       return skills;
     } catch (error) {
-      logger.error("Error fetching all skills:", error);
-      throw new Error("Failed to fetch all skills");
+      throw error;
     }
   },
 
@@ -22,8 +21,7 @@ export const SkillController = {
       const skill = await useCase.getSkillById(id);
       return skill;
     } catch (error) {
-      logger.error(`Error fetching skill with ID ${id}:`, error);
-      throw new Error(`Failed to fetch skill with ID ${id}`);
+      throw error;
     }
   },
 
@@ -32,8 +30,7 @@ export const SkillController = {
       const skill = await useCase.getSkillBySlug(slug);
       return skill;
     } catch (error) {
-      logger.error(`Error fetching skill with slug ${slug}:`, error);
-      throw new Error(`Failed to fetch skill with slug ${slug}`);
+      throw error;
     }
   },
 
@@ -42,18 +39,7 @@ export const SkillController = {
       const upsertedSkill = await useCase.upsertSkill(skill);
       return upsertedSkill;
     } catch (error) {
-      logger.error("Error upserting skill:", error);
-      throw new Error("Failed to upsert skill");
-    }
-  },
-
-  getSkillsByCategory: async (category: SkillCategory): Promise<SkillEntity[]> => {
-    try {
-      const skills = await useCase.getSkillsByCategory(category);
-      return skills;
-    } catch (error) {
-      logger.error(`Error fetching skills by category ${category}:`, error);
-      throw new Error(`Failed to fetch skills by category ${category}`);
+      throw error;
     }
   },
 
@@ -61,16 +47,14 @@ export const SkillController = {
     try {
       await useCase.deleteSkillById(id);
     } catch (error) {
-      logger.error(`Error deleting skill with ID ${id}:`, error);
-      throw new Error(`Failed to delete skill with ID ${id}`);
+      throw error;
     }
   },
   deleteSkillBySlug: async (slug: string): Promise<void> => {
     try {
       await useCase.deleteSkillBySlug(slug);
     } catch (error) {
-      logger.error(`Error deleting skill with slug ${slug}:`, error);
-      throw new Error(`Failed to delete skill with slug ${slug}`);
+      throw error;
     }
   },
 
@@ -78,8 +62,7 @@ export const SkillController = {
     try {
       return await useCase.createSkill(skill);
     } catch (error) {
-      logger.error("Error creating skill:", error);
-      throw new Error("Failed to create skill");
+      throw error;
     }
   }
 

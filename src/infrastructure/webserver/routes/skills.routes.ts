@@ -5,9 +5,22 @@ import { SkillCategory } from '../../../shared/enums/skill-category.enum';
 import { NotFound } from '../../../shared/utils/error';
 
 export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
-  .get('/', async (ctx) => {
+  .get('/', async ({ query }) => {
     const skills = await SkillController.getAllSkills();
-    return skills;
+
+    let filteredSkills: SkillEntity[] = skills;
+
+    if (query.category as SkillCategory) {
+      filteredSkills = skills.filter((skill) => skill.category === query.category);
+    }
+
+    return filteredSkills;
+  }, {
+    detail: {
+      tags: ['Skills'],
+      summmary: 'Get all skills',
+      description: 'Retrive all skills with optional category filter',
+    }
   })
   .get('/:id', async (ctx) => {
     const skill = await SkillController.getSkillById(ctx.params.id);
@@ -15,6 +28,12 @@ export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
       throw NotFound('Skill not found')
     }
     return skill;
+  }, {
+    detail: {
+      tags: ['Skills'],
+      summmary: 'Get skill by ID',
+      description: 'Get skill by ID from the database',
+    }
   })
 
   .get('/slug/:slug', async (ctx) => {
@@ -43,18 +62,3 @@ export const SkillRoutes = new Elysia({ prefix: '/api/skills' })
     await SkillController.deleteSkillBySlug(ctx.params.slug);
     return;
   })
-  .get('/category/:category', async (ctx) => {
-    const rawCategory = ctx.params.category.toUpperCase();
-    const allowedCategories = Object.values(SkillCategory);
-
-    if (!allowedCategories.includes(rawCategory as SkillCategory)) {
-      return new Response(
-        JSON.stringify({ error: `Invalid category: ${ctx.params.category}` }),
-        { status: 400 }
-      );
-    }
-
-    const category = rawCategory as SkillCategory;
-    const skills = await SkillController.getSkillsByCategory(category);
-    return skills;
-  });
