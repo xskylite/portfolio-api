@@ -124,7 +124,7 @@ export class ProjectRepository {
       console.error('Error creating project:', error);
 
       if (error instanceof AppError) {
-        throw error; 
+        throw error;
       }
 
 

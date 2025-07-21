@@ -7,7 +7,7 @@ export const AppConfig = () => {
     logger.warn(formatLog(`**NODE_ENV** is not set to **production** or **development**. Defaulting to **development**.`));
   }
   return {
-    port: parseInt(process.env.PORT || '3000', 10),
+    port: parseInt(process.env.SERVER_PORT || '3001', 10),
     env: isProduction ? 'production' : 'development',
   }
 }
