@@ -20,6 +20,7 @@ export function generateSlugs(name: string): string[] {
   const base = normalizeSlug(name);
   const alt1 = name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
   const alt2 = name.toLowerCase().replace(/\s+/g, "-");
+  const defaultSlug = name.toLowerCase();
 
   const manual = MANUAL_ALIASES[base] || [];
 
@@ -28,6 +29,7 @@ export function generateSlugs(name: string): string[] {
     normalizeSlug(alt1),
     normalizeSlug(alt2),
     normalizeSlug(name.toLowerCase()),
+    defaultSlug,
     ...manual.map(normalizeSlug),
   ]);
 
