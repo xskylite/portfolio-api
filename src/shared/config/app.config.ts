@@ -9,5 +9,6 @@ export const AppConfig = () => {
   return {
     port: parseInt(process.env.SERVER_PORT || '3001', 10),
     env: isProduction ? 'production' : 'development',
+    corsOrigin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
   }
 }

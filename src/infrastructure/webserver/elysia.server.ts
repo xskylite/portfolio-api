@@ -10,12 +10,14 @@ import { SpotifyRoutes } from './routes/spotify.routes';
 import { HealthRoutes } from './routes/health.routes';
 import { handleError } from '../../shared/utils/handle-error';
 import { handleResponse } from '../../shared/utils/handle-response';
+import { AppConfig } from '../../shared/config/app.config';
 
 export const buildServer = () => {
+  const config = AppConfig();
   const app = new Elysia()
-  .use(pluginSwagger)
+    .use(pluginSwagger)
     .use(cors({
-      origin: ['http://localhost:3000'],
+      origin: config.corsOrigin,
       credentials: true
     }))
     .onError(handleError)

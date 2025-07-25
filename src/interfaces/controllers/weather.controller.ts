@@ -20,15 +20,11 @@ export const WeatherController = {
       lang?: string;
     };
   }): Promise<WeatherEntity | { error: string }> => {
-    try {
-      const location = query.location
-      const lang = query.lang || "en"
+    const location = query.location
+    const lang = query.lang || "en"
 
 
-      const weather = await weatherUseCase.execute(location, lang)
-      return weather;
-    } catch (error) {
-      throw error;
-    }
+    const weather = await weatherUseCase.execute(location, lang)
+    return weather;
   }
 }

@@ -52,7 +52,7 @@ model Skill {
   name        String        @unique
   slugs       String[]      @unique
   icon        String?
-  category    SkillCategory // ALL, FRONTEND, BACKEND, DEVOPS
+  category    SkillCategory // FRONTEND, BACKEND, DEVOPS
   isActiveUse Boolean       @default(true)
   description String?
 

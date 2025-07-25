@@ -1,7 +1,5 @@
 import { SkillRepository } from "../../infrastructure/repositories/skill.repository";
-import { logger } from "../../shared/utils/logger";
 import { SkillEntity } from "../entities/skill.entity";
-import { SkillCategory } from "../../shared/enums/skill-category.enum";
 
 export class GetSkillsUseCase {
   private skillRepository: SkillRepository;
@@ -11,63 +9,37 @@ export class GetSkillsUseCase {
   }
 
   async getAllSkills(): Promise<SkillEntity[]> {
-    try {
-      const skills = await this.skillRepository.getAllSkills();
-      return skills;
-    } catch (error) {
-      throw error;
-    }
+    const skills = await this.skillRepository.getAllSkills();
+    return skills;
   }
 
   async getSkillById(id: string): Promise<SkillEntity | null> {
-    try {
-      const skill = await this.skillRepository.getSkillById(id);
-      return skill;
-    } catch (error) {
-      throw error;
-    }
+    const skill = await this.skillRepository.getSkillById(id);
+    return skill;
   }
 
   async getSkillBySlug(slug: string): Promise<SkillEntity | null> {
-    try {
-      const skill = await this.skillRepository.getSkillBySlug(slug);
-      return skill;
-    } catch (error) {
-      throw error;
-    }
+    const skill = await this.skillRepository.getSkillBySlug(slug);
+    return skill;
   }
 
   async upsertSkill(skill: SkillEntity): Promise<SkillEntity> {
-    try {
-      const upsertedSkill = await this.skillRepository.upsertSkill(skill);
-      return upsertedSkill;
-    } catch (error) {
-      throw error;
-    }
+    const upsertedSkill = await this.skillRepository.upsertSkill(skill);
+    return upsertedSkill;
   }
 
   async deleteSkillById(id: string): Promise<void> {
-    try {
-      await this.skillRepository.deleteSkillById(id);
-    } catch (error) {
-      throw error;
-    }
+    await this.skillRepository.deleteSkillById(id);
+    return;
   }
 
   async deleteSkillBySlug(slug: string): Promise<void> {
-    try {
-      await this.skillRepository.deleteSkillBySlug(slug);
-    } catch (error) {
-      throw error;
-    }
+    await this.skillRepository.deleteSkillBySlug(slug);
+    return;
   }
 
 
   async createSkill(skill: Omit<SkillEntity, 'id'>): Promise<SkillEntity> {
-    try {
-      return await this.skillRepository.createSkill(skill);
-    } catch (error) {
-      throw error;
-    }
+    return await this.skillRepository.createSkill(skill);
   }
 }
